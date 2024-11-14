@@ -1,0 +1,2 @@
+1930 , jazz guitarist idol django reinhardt , face gangster fall love mute woman . 
+['Comedy', ' Drama', ' Music']

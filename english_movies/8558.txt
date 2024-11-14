@@ -1,0 +1,2 @@
+otherwis reject ignor boy creat fantasi pal martial art movi hero . 
+['Action', ' Adventure', ' Drama', ' Family']

@@ -1,0 +1,2 @@
+new york citi , crime lord 's right-hand man seduc woman seek retribut . 
+['Thriller', ' Action', ' Crime', ' Drama']

@@ -1,0 +1,2 @@
+group peopl fight surviv zombi infest town . 
+['Horror', ' Science Fiction', ' Action']

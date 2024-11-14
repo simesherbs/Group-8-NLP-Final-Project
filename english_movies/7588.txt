@@ -1,0 +1,2 @@
+nan 
+['Action', ' Adventure', ' Thriller']

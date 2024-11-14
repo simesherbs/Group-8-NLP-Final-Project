@@ -1,0 +1,2 @@
+1850 oregon , backwoodsman bring wife home farm , six brother decid want get marri . 
+['Comedy', ' Drama', ' Western']

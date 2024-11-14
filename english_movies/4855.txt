@@ -1,0 +1,2 @@
+rugrat find strand desert island , meet thornberri , famili agre help escap . 
+['Animation', ' Family', ' Adventure', ' Comedy']

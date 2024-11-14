@@ -1,0 +1,2 @@
+classic art professor collector , doubl profession assassin , coerc retir aveng murder old friend . 
+['Action', ' Adventure', ' Drama']

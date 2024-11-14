@@ -1,0 +1,2 @@
+1970 hollywood , detect tri help friend accus murder wife . 
+['Crime', ' Mystery', ' Thriller', ' Comedy']

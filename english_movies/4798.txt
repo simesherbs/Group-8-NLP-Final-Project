@@ -1,0 +1,2 @@
+sound-era silent film , tramp fall love beauti blind flower seller . 
+['Comedy', ' Romance', ' Drama']

@@ -1,0 +1,2 @@
+simpl man turn geniu applic comput scienc . 
+['Science Fiction', ' Horror']

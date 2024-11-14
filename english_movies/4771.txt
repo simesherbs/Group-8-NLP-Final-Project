@@ -1,0 +1,2 @@
+princ fellowship companion set rescu bride fortress alien invad arriv home planet . 
+['Action', ' Adventure', ' Fantasy', ' Science Fiction']

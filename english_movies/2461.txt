@@ -1,0 +1,2 @@
+two men 1930 mississippi becom friend sentenc life prison togeth crime commit . 
+['Comedy', ' Crime']

@@ -1,0 +1,2 @@
+film follow continu stori , son lucilla . 
+['Action', ' Drama', ' Adventure']

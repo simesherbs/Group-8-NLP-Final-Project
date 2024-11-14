@@ -1,0 +1,2 @@
+small town girl citi boy meet sunset strip , pursu hollywood dream . 
+['Comedy', ' Drama', ' Music', ' Romance']

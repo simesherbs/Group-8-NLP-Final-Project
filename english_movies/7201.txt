@@ -1,0 +1,2 @@
+woman 's life torn apart husband infant son kill suicid bomb soccer match . 
+['Drama', ' Thriller', ' Romance']

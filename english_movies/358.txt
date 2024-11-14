@@ -1,0 +1,2 @@
+deckard seek reveng toretto famili comatos brother . 
+['Action', ' Thriller', ' Crime']

@@ -1,0 +1,2 @@
+uss enterpris crew explor furthest reach unchart space , encount mysteri new enemi put everyth feder stand test . 
+['Action', ' Adventure', ' Science Fiction']

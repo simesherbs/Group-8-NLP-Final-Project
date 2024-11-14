@@ -1,0 +1,2 @@
+boy given abil becom adult superhero time need singl magic word . 
+['Action', ' Comedy', ' Fantasy']

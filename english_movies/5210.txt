@@ -1,0 +1,2 @@
+buzz lightyear must battl emperor zurg help three hope insist partner . 
+['Animation', ' Family', ' Comedy', ' Science Fiction', ' Adventure']

@@ -1,0 +1,2 @@
+adventur , dog embark epic 400-mile journey home separ belov human . 
+['Drama', ' Adventure', ' Family']

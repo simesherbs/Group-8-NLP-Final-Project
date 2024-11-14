@@ -1,0 +1,2 @@
+chronicl life 18th centuri aristocrat , duchess devonshir , revil extravag polit person life . 
+['Drama', ' History', ' Romance']

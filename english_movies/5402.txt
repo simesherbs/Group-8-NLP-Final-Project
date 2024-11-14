@@ -1,0 +1,2 @@
+forens psychologist must determin minor charg murder . 
+['Mystery', ' Thriller', ' Crime', ' Horror']

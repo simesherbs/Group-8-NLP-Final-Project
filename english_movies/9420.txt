@@ -1,0 +1,2 @@
+movi life 's king . 
+['Action', ' Adventure', ' History', ' Drama']

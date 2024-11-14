@@ -1,0 +1,2 @@
+mr. magoo , man terribl eyesight , get caught museum robberi . 
+['Comedy', ' Family']

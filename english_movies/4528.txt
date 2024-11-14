@@ -1,0 +1,2 @@
+aspir painter meet variou charact learn valuabl lesson travel across america . 
+['Adventure', ' Comedy', ' Fantasy']

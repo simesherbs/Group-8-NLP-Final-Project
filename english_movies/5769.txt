@@ -1,0 +1,2 @@
+colleg graduat goe work nanni rich new york famili . ensconc home , juggl dysfunct , new romanc , spoil brat charg . 
+['Comedy', ' Drama', ' Romance']

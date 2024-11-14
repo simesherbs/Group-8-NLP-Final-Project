@@ -1,0 +1,2 @@
+one woman 's journey self-discoveri turn harrow tale surviv . 
+['Thriller', ' Adventure', ' Drama']

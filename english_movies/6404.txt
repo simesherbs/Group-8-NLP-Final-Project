@@ -1,0 +1,2 @@
+model oppos compani attempt take busi . 
+['Comedy', ' Adventure', ' Action']

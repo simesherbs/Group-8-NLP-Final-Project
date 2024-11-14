@@ -1,0 +1,2 @@
+demon leprechaun terror group young peopl believ stole gold . 
+['Horror', ' Comedy', ' Fantasy']

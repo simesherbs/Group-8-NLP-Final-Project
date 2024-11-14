@@ -1,0 +1,2 @@
+anim retel ‘ night live dead ’ , group peopl rural farmhous struggl surviv threat bloodthirsti zombi . 
+['Animation', ' Horror']

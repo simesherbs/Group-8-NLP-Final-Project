@@ -1,0 +1,2 @@
+detect hong kong team american gambler battl notori chines crimin . 
+['Action', ' Comedy', ' Thriller', ' Mystery']

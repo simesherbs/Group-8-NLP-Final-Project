@@ -1,0 +1,2 @@
+1820 , frontiersman , glass , set path vengeanc left dead bear maul . 
+['Western', ' Drama', ' Adventure']

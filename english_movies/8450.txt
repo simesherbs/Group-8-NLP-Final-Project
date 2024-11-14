@@ -1,0 +1,2 @@
+young scottish singer , rose-lynn , dream make countri artist nashvil releas prison . 
+['Music', ' Comedy', ' Drama']
