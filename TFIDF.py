@@ -25,16 +25,7 @@ def calculate_tfidf(hash:dict, length):
     id = 1
     for sent in sentences:
         doc_word_list = list(sent.keys())
-        for w in doc_word_list:
-            if w not in idf.keys():
-                count = 0
-                for q in sentences:
-                    if w in q:
-                        count += 1
-                idf[w] = math.log(length/count)
-            tf = doc_word_list.count(w) / len(doc_word_list)
-            tfidf[id][w] = tf * idf[w]
-            id += 1
+        print(doc_word_list)
     return tfidf
 TFIDF = calculate_tfidf(TF, 9999)
 for key, value in TFIDF.items():
