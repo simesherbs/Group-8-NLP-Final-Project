@@ -8,6 +8,9 @@ from nltk import PorterStemmer
 from nltk.corpus import names, stopwords
 from collections import defaultdict
 import pickle
+from nltk.tokenize import RegexpTokenizer
+
+word_index = {}
 
 corpus_filename = sys.argv[1]
 corpus_name_plain = '.'.join(corpus_filename.split('.')[:-1])
@@ -25,11 +28,32 @@ ps = PorterStemmer()
 
 genre_indexing  = defaultdict(list)
 
-def add_to_dict(dict:dict, key:str, value: str):
-    if key in dict:
-        dict[key].append(value)
+hash = defaultdict(list)
+
+idf_hash = {}
+
+def add_to_index(dict:dict, word:str, id:str):
+    if word not in dict.keys():
+        dict[word] = [id]
     else:
-        dict[key] = [value]
+        dict[word].append(id)
+
+def add_to_list_dict(dict:dict, keys:list[str], value: str):
+    for key in keys:
+        if key in dict:
+            dict[key].append(value)
+        else:
+            dict[key] = [value]
+
+def add_to_idf_dict(dict:dict, tokens:list[str]):
+    already_seen = {}
+    for token in tokens:
+        if token not in idf_hash.keys():
+            idf_hash[token] = 1
+        elif token not in already_seen.keys():
+            idf_hash[token] += 1
+            already_seen[token] = 1
+    
 
 for index, row in df.iterrows():
     
@@ -38,23 +62,26 @@ for index, row in df.iterrows():
     with open(corpus_name_plain + "/" + str(index) + ".txt", "w") as f:
         tags = []
 
-        
+        tokenizer = RegexpTokenizer(r'\w+')
         content = row['overview']
-        tokenized = nltk.tokenize.word_tokenize(str(content))
-
+        tokenized = tokenizer.tokenize(str(content))
+        stemmed_words = []
         
         for w in tokenized:
             if w.lower() not in stop_words and w not in names:
                 try:
                     f.write(PorterStemmer.stem(self=ps, word=w) + " ")
                     parsed_str += (w + " ")
+                    stemmed_words.append(PorterStemmer.stem(self=ps, word=w))
+                    add_to_index(word_index, PorterStemmer.stem(self=ps, word=w), index)
                 except:
                     pass
         try:
             tags = row['genres'].split(',')
         except:
             print(title)
-      
+    hash[index] = stemmed_words
+    add_to_idf_dict(idf_hash, stemmed_words)
       
     f.close()
     
@@ -74,13 +101,29 @@ for index, row in df.iterrows():
             with open(corpus_name_plain + "/" + tag + "/" + str(index) + ".txt", "w") as f:
                 f.write(parsed_str)
             """
-    add_to_dict(genre_indexing, tag, index)
+    add_to_list_dict(genre_indexing, tags, index)
 
 sorted_by_values = dict(sorted(tag_dict.items(), reverse=True, key=lambda item: item[1]))
 
 with open(corpus_name_plain + '_genre_indexing.pkl', 'wb') as fp:
     pickle.dump(genre_indexing, fp)
 fp.close()
+
+with open(corpus_name_plain + '_hash.pkl', 'wb') as ff:
+    pickle.dump(hash, ff)
+ff.close()
+
+
+
+
+with open(corpus_name_plain + '_IDF_dict.pkl', 'wb') as ff:
+    pickle.dump(idf_hash, ff)
+ff.close()
+
+with open(corpus_name_plain + '_word_index.pkl', 'wb') as ff:
+    pickle.dump(word_index, ff)
+ff.close()
+
 
 with open(corpus_name_plain + '_genres.json', 'w') as fp:
     json.dump(sorted_by_values, fp)

@@ -7,7 +7,9 @@ from collections import defaultdict
 corpus_dir = sys.argv[1]
 rootdir = os.curdir + "/" + corpus_dir
 
-
+with open(corpus_dir + '_hash.pkl', 'rb') as f:
+    hash = pickle.load(f)
+f.close()
 
 def add_to_dict(dict:dict, key:str):
     if key in dict:
@@ -16,18 +18,15 @@ def add_to_dict(dict:dict, key:str):
         dict[key] = 1
 
 
-#tfidf[g][w] = tfidf for word w in grene g
-TF = {}
-for path, folders, files in os.walk(rootdir):
-    for file in files:
-        file_dict = {}
-        with open(rootdir + "/" + file, "r") as f:
-            content = f.read().split(" ")
-            for word in content:
-                add_to_dict(file_dict, word)
-        f.close()
-        TF[file] = file_dict
 
+TF = {}
+for file, tokens in hash.items():
+    current_file_dict = {}
+    for token in tokens:
+        add_to_dict(current_file_dict, token)
+    TF[file] = current_file_dict
+
+print(TF[0])
 with open(corpus_dir + '_TF_dict.pkl', 'wb') as f:
     pickle.dump(TF, f)
 

@@ -1,1 +1,1 @@
-life resid tower block begin run control . 
+life resid tower block begin run control 
