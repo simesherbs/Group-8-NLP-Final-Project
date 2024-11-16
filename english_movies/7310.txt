@@ -1,2 +1,1 @@
 head chef balanc multipl person profession crise popular restaur london . 
-['Drama', ' Thriller']

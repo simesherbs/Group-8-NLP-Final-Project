@@ -1,2 +1,1 @@
 nan 
-['Action', ' Science Fiction', ' Adventure', ' Fantasy', ' Thriller']

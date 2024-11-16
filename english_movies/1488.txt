@@ -1,2 +1,1 @@
 dog goe quest discov purpos life cours sever lifetim multipl owner . 
-['Adventure', ' Comedy', ' Fantasy', ' Family', ' Drama']

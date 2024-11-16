@@ -1,2 +1,1 @@
 plot unknown . soft-reboot anim `` shrek '' franchis . 
-['Animation', ' Family', ' Comedy', ' Fantasy']

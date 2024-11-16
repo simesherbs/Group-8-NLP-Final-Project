@@ -1,2 +1,1 @@
 third instal deadpool franchis . 
-['Action', ' Adventure', ' Comedy']

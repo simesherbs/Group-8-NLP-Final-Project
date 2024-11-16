@@ -1,2 +1,1 @@
 robot 5 move citi help friend jahrvi toy manufactur enterpris , manipul crimin want use nefari purpos . 
-['Comedy', ' Family', ' Science Fiction', ' Drama']

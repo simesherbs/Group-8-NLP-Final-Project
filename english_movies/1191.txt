@@ -1,2 +1,1 @@
 dog find mean exist live human meet . 
-['Family', ' Adventure', ' Drama']

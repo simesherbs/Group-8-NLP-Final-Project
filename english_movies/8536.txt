@@ -1,2 +1,1 @@
 gritti adapt shakespear 's play english 's bloodi conquest . 
-['War', ' Drama', ' History']

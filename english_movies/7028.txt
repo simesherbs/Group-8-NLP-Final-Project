@@ -1,2 +1,1 @@
 shark take bite east coast sharknado hit , d.c. , . 
-['Action', ' TV Movie', ' Science Fiction', ' Comedy', ' Adventure']

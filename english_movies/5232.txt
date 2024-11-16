@@ -1,2 +1,1 @@
 new york comedian alvi singer fall love ditsi . 
-['Comedy', ' Drama', ' Romance']

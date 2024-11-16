@@ -1,2 +1,1 @@
 span one thousand year , three parallel stori , fountain stori love , death , spiritu , fragil exist world . 
-['Drama', ' Adventure', ' Science Fiction', ' Romance']

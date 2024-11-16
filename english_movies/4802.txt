@@ -1,2 +1,1 @@
 1950 ireland new york , young choos two men two countri . 
-['Romance', ' Drama']

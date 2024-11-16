@@ -1,2 +1,1 @@
 girl new york attend colleg join once-fam march band . 
-['Music', ' Comedy', ' Drama']
