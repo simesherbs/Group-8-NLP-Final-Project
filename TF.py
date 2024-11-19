@@ -26,7 +26,7 @@ for file, tokens in hash.items():
         add_to_dict(current_file_dict, token)
     TF[file] = current_file_dict
 
-print(TF[0])
+
 with open(corpus_dir + '_TF_dict.pkl', 'wb') as f:
     pickle.dump(TF, f)
 
