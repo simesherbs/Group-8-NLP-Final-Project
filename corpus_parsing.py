@@ -11,12 +11,18 @@ from nltk.corpus import names, stopwords
 from collections import defaultdict
 import pickle
 from nltk.tokenize import RegexpTokenizer
+import re
 
 def create_file(id: str, words: list[str], genres: list[str]):
     
     with open(corpus_name_plain + "/" + str(id) + ".txt", "w") as f:
         for word in words:
-            f.write(word + " ")
+            try:
+                word.encode("utf-8")
+                f.write(word + " ")
+            except Exception as e:
+                print(word, id)
+                exit(1)
     f.close()
 
 def append_doc_freq(id: str, words: list[str], genres: list[str]):
@@ -34,16 +40,16 @@ def append_word_index(id: str, words: list[str], genres: list[str]):
     for word in words:
         keys = word_index.keys()
         if word not in word_index.keys():
-            word_index[word] = id
+            word_index[word] = [id]
         else:
             word_index[word].append(id)
 
 def append_genre_index(id: str, words:list[str], genres: list[str]):
+    genre_indexing[id] = []
     for genre in genres:
-        if genre in genre_indexing.keys():
-            dict[genre].append(id)
-        else:
-            dict[genre] = [id]
+        if genre[0] == " ":
+            genre = genre[1:(len(genre))]
+            genre_indexing[id].append(genre)
 
 def process_corpus(id:str, words:list[str], genres: list[str]):
     processed_corpus[id] = words
@@ -71,7 +77,7 @@ word_index = {}  # word_index[word] = list of documents word appears in
 tag_dict = {}  # tag_dict[tag] = # of movies with tag
 genre_indexing = defaultdict(
     list
-)  # genre_indexing[genre] = list of ids for documents with genre tag
+)  # genre_indexing[id] = list of genres for document id
 processed_corpus = defaultdict(list)  # processed_corpus[id] = list of stemmed words of doc
 doc_freq = {}  # doc_freq[word] = # of docs word appears in
 
@@ -91,10 +97,9 @@ for opt, arg in opts:
     if opt in opt_dict:
         f_array.append(opt_dict[opt][0])
         if opt_dict[opt][1] is not None: d_dict[opt[2:]] = opt_dict[opt][1]
-corpus_name_plain = ".".join(corpus_filename.split(".")[:-1])
 df = pd.read_csv(corpus_filename, usecols=["overview", "genres"])
 df = df.reset_index()
-
+corpus_name_plain = ".".join(corpus_filename.split(".")[:-1])
 
 
 
@@ -110,5 +115,5 @@ for id, row in df.iterrows():
 
 for d_name, d in d_dict.items():
     with open(corpus_name_plain + '_' + d_name + '.pkl', 'wb') as f:
-        pickle.dump(d_dict, f)
+        pickle.dump(d, f)
     f.close()
