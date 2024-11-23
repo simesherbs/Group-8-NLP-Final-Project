@@ -8,6 +8,7 @@ from numpy import ndarray
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 scaler = MinMaxScaler()
+import csv
 
 
 
@@ -46,7 +47,7 @@ class Genre(TypedDict):
     chi_square: DataFrame
     df: DataFrame
     terms: ndarray
-    CS: ndarray
+    CS: list
 
 Genre_Objects = {}
 CT = []
@@ -123,8 +124,18 @@ for genre, Genre_Object in Genre_Objects.items():
 
     scores = pd.DataFrame({
         'term': atfidf_df['term'],
-        'CS': (.6 * atfidf_df['normalized_score']) + (.4 * chi2_df['normalized_score'])
+        'CS': (.3 * atfidf_df['normalized_score']) + (.7 * chi2_df['normalized_score'])
     }).sort_values(by='CS', ascending=False).head(100)
 
-    Genre_Object['CS'] = scores
+    Genre_Object['CS'] = scores['term'].tolist()
 
+
+with open('CT.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['genre', 'terms'])
+    for genre, Genre_Object in Genre_Objects.items():
+        terms  = Genre_Object['CS']
+        term_str = ''
+        for term in terms:
+            term_str += term + ' '
+        writer.writerow([genre, term_str])
