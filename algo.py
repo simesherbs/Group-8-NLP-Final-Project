@@ -14,10 +14,12 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.linear_model import LogisticRegression
 from nltk.corpus import names, stopwords
 from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import f1_score
-svm = LogisticRegression()
-clf = OneVsRestClassifier(svm)
+svm = SVC(probability=False, C=100)
+rf_classifier = OneVsRestClassifier(RandomForestClassifier(n_estimators=100, random_state=42))
+
 stop_words = set(stopwords.words("english"))
 
 
@@ -58,35 +60,27 @@ for i in movies["genres"]:
 
 
 movies['cleaned_genres'] = genres
-multilabel_binarizer.fit(movies['cleaned_genres'])
+Y_genres = multilabel_binarizer.fit_transform(movies['cleaned_genres'])
+vectorizer = TfidfVectorizer()
+X_tfidf = vectorizer.fit_transform(movies['overview'])
 
-tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=10000)
+# Step 3: Train Random Forest Classifier
+rf_classifier = OneVsRestClassifier(RandomForestClassifier(n_estimators=100, random_state=42))
+rf_classifier.fit(X_tfidf, Y_genres)
 
+# Step 4: Extract Feature Importances
+# Average feature importance across all classes
+feature_importances = np.mean([
+    estimator.feature_importances_ for estimator in rf_classifier.estimators_
+], axis=0)
 
+# Map feature importance to terms
+terms = vectorizer.get_feature_names_out()
+importance_df = pd.DataFrame({
+    "Term": terms,
+    "Importance": feature_importances
+}).sort_values(by="Importance", ascending=False)
 
-y = multilabel_binarizer.transform(movies['cleaned_genres'])
-
-print(multilabel_binarizer.classes_)
-print(y)
-
-xtrain, xval, ytrain, yval = train_test_split(movies['overview'], y, test_size=0.5, random_state=42)
-
-xtrain_tfidf = tfidf_vectorizer.fit_transform(xtrain)
-xval_tfidf = tfidf_vectorizer.transform(xval)
-
-
-
-clf.fit(xtrain_tfidf, ytrain)
-
-y_pred_prob = clf.predict_proba(xval_tfidf)
-
-threshold = 0.3 
-y_pred_new = (y_pred_prob >= threshold).astype(int)
-
-a = f1_score(yval, y_pred_new, average="micro")
-
-print(a)
-
-for i in range(5): 
-  k = xval.sample(1).index[0] 
-  print("Movie: ", movies['id'][k], "\nPredicted genre: ", infer_tags(xval[k])), print("Actual genre: ",movies['cleaned_genres'][k], "\n")
+# Top N terms
+top_n_terms = importance_df.head(10)
+print("Top Terms Based on Feature Importance:\n", top_n_terms)
