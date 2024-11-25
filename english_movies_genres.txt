@@ -1,19 +1,19 @@
-Drama
-Comedy
-Thriller
-Action
-Adventure
-Horror
-Romance
-Family
-Crime
-Science Fiction
-Fantasy
-Animation
-Mystery
-History
-Music
-TV Movie
-War
-Documentary
-Western
+['Drama',
+'Comedy',
+'Thriller',
+'Action',
+'Adventure',
+'Horror',
+'Romance',
+'Family',
+'Crime',
+'Science Fiction',
+'Fantasy',
+'Animation',
+'Mystery',
+'History',
+'Music',
+'TV Movie',
+'War',
+'Documentary',
+'Western']
