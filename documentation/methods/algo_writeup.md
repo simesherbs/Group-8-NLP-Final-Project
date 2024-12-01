@@ -2,13 +2,13 @@
 
 ## Corpus processing:
 
-    The corpus is stemmed and has its stop words deleted. Then it is put through a program that extracts bigrams and trigrams.
-    Those bigrams and trigrams are then append to the end of their respective documents.
+The corpus is stemmed and has its stop words deleted. Then it is put through a program that extracts bigrams and trigrams.
+Those bigrams and trigrams are then append to the end of their respective documents.
 
 ## Candadicy Score
 
-    The processed corpus is then run through a program that calculate the Candadicy Score (CS) for each token of each document that belongs to a given genre.
-    CS is calculated from a mixture of features. Currently we've added support for:
+The processed corpus is then run through a program that calculate the Candadicy Score (CS) for each token of each document that belongs to a given genre.
+CS is calculated from a mixture of features. Currently we've added support for:
 - TFIDF
 - Chi-squared
 
