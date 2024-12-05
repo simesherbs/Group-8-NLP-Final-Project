@@ -134,7 +134,7 @@ for genre, Genre_Object in Genre_Objects.items():
     }).sort_values(by='term', ascending=False)
     Genre_Object['CS_dict'] = dict(zip(scores.term, scores.CS))
 
-    aaa = scores.sort_values(by='CS', ascending=False).head(500)
+    aaa = scores.sort_values(by='CS', ascending=False).head(10)
     Genre_Object['CS'] = aaa['term'].tolist()
 
 

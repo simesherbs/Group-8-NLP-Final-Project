@@ -2,6 +2,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import MultiLabelBinarizer
 import pandas as pd
@@ -36,16 +37,19 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 
 
 # Use Logistic Regression with a OneVsRest strategy for multi-label classification
-classifier = OneVsRestClassifier(LogisticRegression())
+classifier = OneVsRestClassifier(SVC())
 classifier.fit(X_train, y_train)
 
 # Predict on the test set
 y_pred = classifier.predict(X_test)
 
 # Print classification report
-print(classification_report(y_test, y_pred, target_names=mlb.classes_))
+res = (classification_report(y_test, y_pred, target_names=mlb.classes_))
 
 
+resdf = pd.DataFrame(res).transpose()
+
+resdf.to_csv('results.csv')
 
 for i in range(5): 
   k = X_test.sample(1).index[0] 

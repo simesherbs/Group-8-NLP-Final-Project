@@ -117,9 +117,9 @@ def calculate_overview_CS(overview:str, index:int):
         try:
             row = CS_dict.loc[token].to_numpy()
             scores += np.nan_to_num(row, 0)
-        except:
-            print(index)
-            pass
+        except Exception as e:
+            print(e)
+            exit(1)
         
     return scores
 
