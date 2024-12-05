@@ -1,6 +1,13 @@
 from sklearn.feature_extraction.text import CountVectorizer
 import csv
+import pandas as pd
+from nltk import PorterStemmer, sent_tokenize, word_tokenize
+from nltk import RegexpTokenizer
+from nltk.corpus import stopwords
+import re
 
+stop_words = set(stopwords.words("english"))
+ps = PorterStemmer()
 # Load the movie corpus
 corpus_file = "english_movies.csv"  # Replace with your CSV file path
 df = pd.read_csv(corpus_file)
@@ -13,6 +20,7 @@ df = df.dropna(subset=['overview'])
 # Extract the overview column
 overviews = df['overview'].tolist()
 
+punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!"]
 
 def generate_ngrams(text, n):
     """
@@ -22,18 +30,39 @@ def generate_ngrams(text, n):
     :return: A list of n-grams as tuples.
     """
     tokens = text.split()  # Split the text into words
-    return [tuple(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
-
+    ngrams = []
+    sent_text = sent_tokenize(text=text)
+    for sentence in sent_text:
+        tokens = word_tokenize(sentence)
+        for i in range(len(tokens)-n+1):
+            num_of_stop_words = 0
+            stemmed = []
+            ngram = tokens[i:i+n]
+            not_punc = True
+            for unigram in ngram:
+                if unigram in punctuation_list:
+                    not_punc = False
+                    break
+                if unigram.lower() in stop_words:
+                    num_of_stop_words += 1
+                    stemmed.append(unigram.lower())
+                else:
+                    stemmed.append(PorterStemmer.stem(self=ps, word=str(unigram).lower()))
+            if (num_of_stop_words < n and not_punc):
+                ngrams.append(tuple(stemmed))
+    return ngrams
 
 # Generate bigrams and trigrams for each overview and keep results per entry
 entries_bigrams_trigrams = []
 
 for i, overview in enumerate(overviews):
+    unigrams = generate_ngrams(overview, 1)
     bigrams = generate_ngrams(overview, 2)
     trigrams = generate_ngrams(overview, 3)
     entries_bigrams_trigrams.append({
         "index": i,
         "overview": overview,
+        "unigrams": unigrams,
         "bigrams": bigrams,
         "trigrams": trigrams
     })
@@ -41,11 +70,12 @@ for i, overview in enumerate(overviews):
 # Save the bigrams and trigrams for each entry to a CSV file
 with open('entry_bigrams_trigrams.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['Index', 'Overview', 'Bigrams', 'Trigrams'])
+    writer.writerow(['Index', 'Overview', 'Unigrams', 'Bigrams', 'Trigrams'])
     for entry in entries_bigrams_trigrams:
         writer.writerow([
             entry['index'],
             entry['overview'],
+            ", ".join([" ".join(unigram) for unigram in entry['unigrams']]),
             ", ".join([" ".join(bigram) for bigram in entry['bigrams']]),
             ", ".join([" ".join(trigram) for trigram in entry['trigrams']])
         ])
