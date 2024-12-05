@@ -1,7 +1,13 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 import csv
+import nltk
+from nltk.tokenize import RegexpTokenizer 
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize 
+from nltk import PorterStemmer
 
+ps = PorterStemmer()
 # Load the movie corpus
 corpus_file = "english_movies.csv"  # Replace with your CSV file path
 df = pd.read_csv(corpus_file)
@@ -11,9 +17,14 @@ if 'overview' not in df.columns:
     raise ValueError("The CSV does not have an 'overview' column.")
 df = df.dropna(subset=['overview'])
 
+genres = df['genres'].tolist()
+
+stop_words = set(stopwords.words("english"))
+
 # Extract the overview column
 overviews = df['overview'].tolist()
 
+tokenizer = RegexpTokenizer(r"[A-z][A-z-]*(?:'s)?")
 
 def generate_ngrams(text, n):
     """
@@ -22,33 +33,57 @@ def generate_ngrams(text, n):
     :param n: The n in n-gram (e.g., 2 for bigram, 3 for trigram).
     :return: A list of n-grams as tuples.
     """
-    tokens = text.split()  # Split the text into words
-    return [tuple(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
+    sent_text = nltk.sent_tokenize(text)
+    ngrams = ''
+    for sentence in sent_text:
+        tokens = tokenizer.tokenize(sentence)  # Split the text into words
+        for i in range(len(tokens) -n+1):
+            ngram = tokens[i:i+n]
+            ngram_stemmed = ''
+            if (ngram[0] not in stop_words and ngram[n-1] not in stop_words):
+                    for j in range(0, n):
+                        ngram_stemmed += (PorterStemmer.stem(self=ps, word=ngram[j].lower()))
+                        if j < n-1:
+                            ngram_stemmed += ' '
+                    if ngrams == '':
+                        ngrams += str(ngram_stemmed)
+                    else:
+                        ngrams += '@@' + str(ngram_stemmed)
+    return ngrams
 
+def clean_unagram(overview):
 
+    unagrams = ''
+    tokens = tokenizer.tokenize(overview)
+    for token in tokens:
+        if token not in stop_words:
+            if unagrams == '':
+                unagrams += PorterStemmer.stem(self=ps, word=token.lower())
+            else:
+                unagrams += '@@' + PorterStemmer.stem(self=ps, word=token.lower())
+    return unagrams
 # Generate bigrams and trigrams for each overview and keep results per entry
 entries_bigrams_trigrams = []
 
 for i, overview in enumerate(overviews):
     bigrams = generate_ngrams(overview, 2)
     trigrams = generate_ngrams(overview, 3)
+    ungrams = clean_unagram(overview)
     entries_bigrams_trigrams.append({
         "index": i,
-        "overview": overview,
-        "bigrams": bigrams,
-        "trigrams": trigrams
+        "overview": ungrams + '@@' + bigrams + '@@' + trigrams,
+        "genres": genres[i]
     })
 
 # Save the bigrams and trigrams for each entry to a CSV file
-with open('entry_bigrams_trigrams.csv', 'w', newline='') as csvfile:
+with open('entry_bigrams_trigrams_v2.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['Index', 'Overview', 'Bigrams', 'Trigrams'])
+    writer.writerow(['index', 'overview', 'genres'])
     for entry in entries_bigrams_trigrams:
         writer.writerow([
             entry['index'],
             entry['overview'],
-            ", ".join([" ".join(bigram) for bigram in entry['bigrams']]),
-            ", ".join([" ".join(trigram) for trigram in entry['trigrams']])
+            entry['genres']
         ])
 
 # Generate and count global n-grams using CountVectorizer

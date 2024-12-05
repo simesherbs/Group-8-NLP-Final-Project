@@ -12,9 +12,9 @@ import csv
 
 
 
-df = pd.read_csv("english_movies_clean.csv")
+df = pd.read_csv("entry_bigrams_trigrams_v2.csv")
 df["genres"] = df["genres"].apply(
-    lambda x: x.split(", ")
+    lambda x: str(x).split(", ")
 )  # Assuming genres are comma-separated
 
 
@@ -48,6 +48,7 @@ class Genre(TypedDict):
     df: DataFrame
     terms: ndarray
     CS: list
+    CS_dict: dict
 
 Genre_Objects = {}
 CT = []
@@ -62,16 +63,21 @@ for genre in genres_arr:
     gdf = df[df['genres'].apply(lambda x: genre in x)]
     
     Genre_Objects[genre] = Genre(df=gdf['overview'], genre=genre)
-
+    
+def tokenizer(text):
+    temp = text.split('@@')
+    return temp
 def get_TFIDF():
     for genre, Genre_Object in Genre_Objects.items():
-        vectorizer = TfidfVectorizer()
+        vectorizer = TfidfVectorizer(tokenizer=tokenizer, token_pattern=None)
         X = vectorizer.fit_transform(Genre_Object['df']).toarray()
         terms = vectorizer.get_feature_names_out()
         terms = sorted(list(set(terms)))
         Genre_Object['terms'] = terms
         CT.extend(terms)
+    
         # Display the shape of the original TF-IDF sparse matrix
+
         atfidf = np.mean(X, axis=0)
         tfidf_df = pd.DataFrame(X, columns=vectorizer.get_feature_names_out())
         Genre_Object['tfidf_scores'] = tfidf_df
@@ -125,17 +131,44 @@ for genre, Genre_Object in Genre_Objects.items():
     scores = pd.DataFrame({
         'term': atfidf_df['term'],
         'CS': (.3 * atfidf_df['normalized_score']) + (.7 * chi2_df['normalized_score'])
-    }).sort_values(by='CS', ascending=False).head(100)
+    }).sort_values(by='term', ascending=False)
+    Genre_Object['CS_dict'] = dict(zip(scores.term, scores.CS))
 
-    Genre_Object['CS'] = scores['term'].tolist()
+    aaa = scores.sort_values(by='CS', ascending=False).head(500)
+    Genre_Object['CS'] = aaa['term'].tolist()
 
 
-with open('CT.csv', 'w', newline='') as csvfile:
+with open('CT_withngrams.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(['genre', 'terms'])
     for genre, Genre_Object in Genre_Objects.items():
         terms  = Genre_Object['CS']
         term_str = ''
         for term in terms:
-            term_str += term + ' '
+            term_str += term + ', '
         writer.writerow([genre, term_str])
+
+with open('CS_dict.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['term'] + genres_arr)
+    for term in CT:
+        row = [term]
+        for genre, Genre_Object in Genre_Objects.items():
+            if term in Genre_Object['CS_dict']:
+                row.append(Genre_Object['CS_dict'][term])
+            else:
+                row.append(0)
+        writer.writerow(row)
+            
+
+"""
+        Action CT score     Adventure CT score
+word1       .8                  .9
+word2       
+word3
+
+
+
+
+
+"""

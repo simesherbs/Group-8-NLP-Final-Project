@@ -1,0 +1,44 @@
+# Step 1: Load the dataset
+# Load the corpus of movie synopses and their associated genre tags from a CSV file
+LOAD dataset from CSV file (each document has synopses and genre(s))
+
+
+# Step 3: Extract TF-IDF scores for each term
+# Calculate the TF-IDF scores for the entire corpus
+INITIALIZE TfidfVectorizer with stopwords (or any other custom settings)
+fit and transform the cleaned corpus to obtain the TF-IDF matrix (X_tfidf)
+
+# Step 4: Calculate Chi-square score for each term and genre
+# Initialize a dictionary to store chi-square scores for each term for each genre
+INITIALIZE empty dictionary chi2_scores for storing chi-square scores
+for each term in the vocabulary (from the TF-IDF vectorizer):
+    for each genre in the list of genres:
+        calculate the chi-square score for this term with respect to the current genre
+        store the chi-square score in chi2_scores[term][genre]
+
+# Step 5: Calculate C-values for each term
+# C-value measures the importance of terms based on frequency and uniqueness in each genre
+INITIALIZE empty dictionary c_values for storing C-values
+for each term in the vocabulary:
+    calculate the C-value for the term based on its frequency and significance
+    store the C-value in c_values[term]
+
+# Step 6: Combine the feature scores for each term and genre
+# The final feature score for each term and genre will be a combination of the three scores
+INITIALIZE empty dictionary feature_scores to store combined scores for each genre
+for each genre in the list of genres:
+    for each term in the vocabulary:
+        retrieve the TF-IDF score for this term in the current genre (from X_tfidf)
+        retrieve the Chi-square score for this term and genre (from chi2_scores)
+        retrieve the C-value for this term (from c_values)
+        
+        # Combine the scores using weighted averaging or any other combination method
+        combined_score = (0.5 * tfidf_score) + (0.3 * chi2_score) + (0.2 * c_value)
+        
+        # Store the combined score in feature_scores[genre][term]
+        store combined_score in feature_scores[genre][term]
+
+# Step 7: Output the combined feature scores for each term and genre
+for each genre in the list of genres:
+    for each term in the vocabulary:
+        print "Genre:", genre, "Term:", term, "Combined Score:", feature_scores[genre][term]
