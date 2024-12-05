@@ -35,7 +35,7 @@ def generate_ngrams(text, n):
     for sentence in sent_text:
         tokens = word_tokenize(sentence)
         for i in range(len(tokens)-n+1):
-            num_of_stop_words = 0
+            no_stop_words = False
             stemmed = []
             ngram = tokens[i:i+n]
             not_punc = True
@@ -44,11 +44,11 @@ def generate_ngrams(text, n):
                     not_punc = False
                     break
                 if unigram.lower() in stop_words:
-                    num_of_stop_words += 1
-                    stemmed.append(unigram.lower())
+                    no_stop_words = False
+                    break
                 else:
                     stemmed.append(PorterStemmer.stem(self=ps, word=str(unigram).lower()))
-            if (num_of_stop_words < n and not_punc):
+            if (no_stop_words and not_punc):
                 ngrams.append(tuple(stemmed))
     return ngrams
 
