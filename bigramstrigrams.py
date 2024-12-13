@@ -20,7 +20,7 @@ df = df.dropna(subset=['overview'])
 # Extract the overview column
 overviews = df['overview'].tolist()
 
-punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!"]
+punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!", "(", ")"]
 
 def generate_ngrams(text, n):
     """
@@ -70,7 +70,7 @@ for i, row in df.iterrows():
     })
 
 # Save the bigrams and trigrams for each entry to a CSV file
-with open('entry_bigrams_trigrams.csv', 'w', newline='') as csvfile:
+with open('entry_bigrams_trigrams.csv', 'w', newline='', encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(['Index', 'Overview', 'Unigrams', 'Bigrams', 'Trigrams', 'Genres'])
     for entry in entries_bigrams_trigrams:
