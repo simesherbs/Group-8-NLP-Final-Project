@@ -39,7 +39,11 @@ def generate_ngrams(text, n):
             stemmed = []
             ngram = tokens[i:i+n]
             not_punc = True
+            proper_possessive = True
             for unigram in ngram:
+                if "'s" in ngram or "s'" in ngram:
+                    if not(len(ngram) == 3 and (ngram[1] == "'s" or ngram[1] == "s'")):
+                        proper_possessive = False
                 if unigram in punctuation_list:
                     not_punc = False
                     break
@@ -48,8 +52,9 @@ def generate_ngrams(text, n):
                     break
                 else:
                     stemmed.append(PorterStemmer.stem(self=ps, word=str(unigram).lower()))
-            if (no_stop_words and not_punc):
+            if (no_stop_words and not_punc and proper_possessive):
                 ngrams.append(tuple(stemmed))
+            
     return ngrams
 
 # Generate bigrams and trigrams for each overview and keep results per entry
