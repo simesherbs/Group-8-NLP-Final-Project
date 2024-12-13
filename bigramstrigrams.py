@@ -35,7 +35,7 @@ def generate_ngrams(text, n):
     for sentence in sent_text:
         tokens = word_tokenize(sentence)
         for i in range(len(tokens)-n+1):
-            no_stop_words = False
+            no_stop_words = True
             stemmed = []
             ngram = tokens[i:i+n]
             not_punc = True
@@ -55,7 +55,8 @@ def generate_ngrams(text, n):
 # Generate bigrams and trigrams for each overview and keep results per entry
 entries_bigrams_trigrams = []
 
-for i, overview in enumerate(overviews):
+for i, row in df.iterrows():
+    overview = row['overview']
     unigrams = generate_ngrams(overview, 1)
     bigrams = generate_ngrams(overview, 2)
     trigrams = generate_ngrams(overview, 3)
@@ -64,20 +65,22 @@ for i, overview in enumerate(overviews):
         "overview": overview,
         "unigrams": unigrams,
         "bigrams": bigrams,
-        "trigrams": trigrams
+        "trigrams": trigrams,
+        'genres': row['genres']
     })
 
 # Save the bigrams and trigrams for each entry to a CSV file
 with open('entry_bigrams_trigrams.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['Index', 'Overview', 'Unigrams', 'Bigrams', 'Trigrams'])
+    writer.writerow(['Index', 'Overview', 'Unigrams', 'Bigrams', 'Trigrams', 'Genres'])
     for entry in entries_bigrams_trigrams:
         writer.writerow([
             entry['index'],
             entry['overview'],
             ", ".join([" ".join(unigram) for unigram in entry['unigrams']]),
             ", ".join([" ".join(bigram) for bigram in entry['bigrams']]),
-            ", ".join([" ".join(trigram) for trigram in entry['trigrams']])
+            ", ".join([" ".join(trigram) for trigram in entry['trigrams']]),
+            entry['genres']
         ])
 
 # Generate and count global n-grams using CountVectorizer
