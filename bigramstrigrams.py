@@ -20,7 +20,7 @@ df = df.dropna(subset=['overview'])
 # Extract the overview column
 overviews = df['overview'].tolist()
 
-punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!", "(", ")", "'"]
+punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!", "(", ")", "'", "’", "`"]
 
 def generate_ngrams(text, n):
     """
@@ -71,13 +71,14 @@ for i, row in df.iterrows():
         "unigrams": unigrams,
         "bigrams": bigrams,
         "trigrams": trigrams,
+        "ngrams":unigrams+bigrams+trigrams,
         'genres': row['genres']
     })
 
 # Save the bigrams and trigrams for each entry to a CSV file
 with open('entry_bigrams_trigrams.csv', 'w', newline='', encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['Index', 'Overview', 'Unigrams', 'Bigrams', 'Trigrams', 'Genres'])
+    writer.writerow(['Index', 'Overview', 'Unigrams', 'Bigrams', 'Trigrams', 'Ngrams', 'Genres'])
     for entry in entries_bigrams_trigrams:
         writer.writerow([
             entry['index'],
@@ -85,6 +86,7 @@ with open('entry_bigrams_trigrams.csv', 'w', newline='', encoding="utf-8") as cs
             ", ".join([" ".join(unigram) for unigram in entry['unigrams']]),
             ", ".join([" ".join(bigram) for bigram in entry['bigrams']]),
             ", ".join([" ".join(trigram) for trigram in entry['trigrams']]),
+            ", ".join([" ".join(ngram) for ngram in entry["ngrams"]]),
             entry['genres']
         ])
 
