@@ -20,7 +20,7 @@ df = df.dropna(subset=['overview'])
 # Extract the overview column
 overviews = df['overview'].tolist()
 
-punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!", "(", ")"]
+punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!", "(", ")", "'"]
 
 def generate_ngrams(text, n):
     """
