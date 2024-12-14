@@ -5,20 +5,13 @@ from nltk import PorterStemmer, sent_tokenize, word_tokenize
 from nltk import RegexpTokenizer
 from nltk.corpus import stopwords
 import re
+import sys
+import os
 
 stop_words = set(stopwords.words("english"))
 ps = PorterStemmer()
 # Load the movie corpus
-corpus_file = "english_movies.csv"  # Replace with your CSV file path
-df = pd.read_csv(corpus_file)
 
-# Ensure the 'overview' column exists and drop any rows where it's missing
-if 'overview' not in df.columns:
-    raise ValueError("The CSV does not have an 'overview' column.")
-df = df.dropna(subset=['overview'])
-
-# Extract the overview column
-overviews = df['overview'].tolist()
 
 punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!", "(", ")", "'", "’", "`"]
 
@@ -53,66 +46,59 @@ def generate_ngrams(text, n):
                 elif unigram in punctuation_list or is_all_punc(unigram):
                     not_punc = False
                     break
-                elif unigram.lower() in stop_words:
+                elif unigram.lower() in stop_words or unigram in [' ']:
                     no_stop_words = False
                     break
                 else:
                     stemmed.append(PorterStemmer.stem(self=ps, word=str(unigram).lower()))
-            if (no_stop_words and not_punc and proper_possessive):
+            if (no_stop_words and not_punc and proper_possessive and stemmed != []):
                 ngrams.append(tuple(stemmed))
-            
+
+           
     return ngrams
 
-# Generate bigrams and trigrams for each overview and keep results per entry
-entries_bigrams_trigrams = []
+def generate_ngram_file(corpusfile):
 
-for i, row in df.iterrows():
-    overview = row['overview']
-    unigrams = generate_ngrams(overview, 1)
-    bigrams = generate_ngrams(overview, 2)
-    trigrams = generate_ngrams(overview, 3)
-    entries_bigrams_trigrams.append({
-        "index": i,
-        "unigrams": unigrams,
-        "bigrams": bigrams,
-        "trigrams": trigrams,
-        "ngrams":unigrams+bigrams+trigrams,
-        'genres': row['genres']
-    })
+    df = pd.read_csv(corpusfile)
 
-# Save the bigrams and trigrams for each entry to a CSV file
-with open('entry_bigrams_trigrams.csv', 'w', newline='', encoding="utf-8") as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(['Index', 'Unigrams', 'Bigrams', 'Trigrams', 'Ngrams', 'Genres'])
-    for entry in entries_bigrams_trigrams:
-        writer.writerow([
-            entry['index'],
-            ", ".join([" ".join(unigram) for unigram in entry['unigrams']]),
-            ", ".join([" ".join(bigram) for bigram in entry['bigrams']]),
-            ", ".join([" ".join(trigram) for trigram in entry['trigrams']]),
-            ", ".join([" ".join(ngram) for ngram in entry["ngrams"]]),
-            entry['genres']
-        ])
+    # Ensure the 'overview' column exists and drop any rows where it's missing
+    if 'overview' not in df.columns:
+        raise ValueError("The CSV does not have an 'overview' column.")
+    df = df.dropna(subset=['overview'])
 
-# Generate and count global n-grams using CountVectorizer
-vectorizer = CountVectorizer(ngram_range=(2, 3), token_pattern=r'\b\w+\b')  # 2-gram and 3-gram
-ngram_matrix = vectorizer.fit_transform(overviews)
 
-# Extract n-grams and their counts
-ngrams = vectorizer.get_feature_names_out()
-counts = ngram_matrix.sum(axis=0).A1
+    # Generate bigrams and trigrams for each overview and keep results per entry
+    entries_bigrams_trigrams = []
+    
+    for i, row in df.iterrows():
+        overview = row['overview']
+        unigrams = generate_ngrams(overview, 1)
+        bigrams = generate_ngrams(overview, 2)
+        trigrams = generate_ngrams(overview, 3)
 
-# Combine n-grams and counts
-ngram_counts = list(zip(ngrams, counts))
+        entries_bigrams_trigrams.append({
+            "index": i,
+            "unigrams": unigrams,
+            "bigrams": bigrams,
+            "trigrams": trigrams,
+            "ngrams":unigrams+bigrams+trigrams,
+            'genres': row['genres']
+        })
 
-# Sort by frequency (optional)
-sorted_ngrams = sorted(ngram_counts, key=lambda x: x[1], reverse=True)
+    # Save the bigrams and trigrams for each entry to a CSV file
+    with open(os.path.splitext(corpusfile)[0]+'_ngrams.csv', 'w', newline='', encoding="utf-8") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Index', 'Unigrams', 'Bigrams', 'Trigrams', 'Ngrams', 'Genres'])
+        for entry in entries_bigrams_trigrams:
+            writer.writerow([
+                entry['index'],
+                ", ".join([" ".join(unigram) for unigram in entry['unigrams']]),
+                ", ".join([" ".join(bigram) for bigram in entry['bigrams']]),
+                ", ".join([" ".join(trigram) for trigram in entry['trigrams']]),
+                ", ".join([" ".join(ngram) for ngram in entry["ngrams"]]),
+                entry['genres']
+            ])
+    
+    
+    return os.path.splitext(corpusfile)[0] + "_ngrams.csv"
 
-# Print top results
-print("Most common n-grams:", sorted_ngrams[:10])
-
-# Save global bigrams and trigrams to a CSV file
-with open('bigrams_trigrams.csv', 'w', newline='') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(['N-Gram', 'Frequency'])
-    writer.writerows(sorted_ngrams)

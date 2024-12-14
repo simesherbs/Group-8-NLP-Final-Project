@@ -67,6 +67,8 @@ def get_TFIDF():
     for genre, Genre_Object in Genre_Objects.items():
         vectorizer = TfidfVectorizer()
         X = vectorizer.fit_transform(Genre_Object['df']).toarray()
+        print(Genre_Object['df'])
+        exit(1)
         terms = vectorizer.get_feature_names_out()
         terms = sorted(list(set(terms)))
         Genre_Object['terms'] = terms
@@ -97,8 +99,10 @@ def get_chi_square():
     
     vectorizer = CountVectorizer(vocabulary=CT, ngram_range=(1,3))
     X = vectorizer.fit_transform(df['overview'])
+
     for genre, Genre_Object in Genre_Objects.items():
         a = df['genres'].apply(lambda genre_list: 1 if genre in genre_list else 0)
+        
         chi2_scores, p_values = chi2(X, a)
         chi2_results = pd.DataFrame({
             'term': CT,
@@ -109,22 +113,27 @@ def get_chi_square():
         
 get_chi_square()
 
-
+def get_cval(genre:str) -> DataFrame:
+    cval_df = pd.read_csv('C-Value_normalized.csv')
+    return cval_df[cval_df[genre]]
 
 for genre, Genre_Object in Genre_Objects.items():
     atfidf_df = Genre_Object['atfidf']
     chi2_df = Genre_Object['chi_square']
+    print(atfidf_df.shape)
+    print(chi2_df.shape)
     # Normalize TF-IDF scores
     atfidf_df['normalized_score'] = (atfidf_df['score'] - atfidf_df['score'].min()) / (atfidf_df['score'].max() - atfidf_df['score'].min())
     chi2_df['normalized_score'] = (chi2_df['score'] - chi2_df['score'].min()) / (chi2_df['score'].max() - chi2_df['score'].min())
 
+
     atfidf_df = atfidf_df.sort_values(by='term')
 
-    
+    print(atfidf_df.shape)
 
     scores = pd.DataFrame({
         'term': atfidf_df['term'],
-        'CS': (.3 * atfidf_df['normalized_score']) + (.7 * chi2_df['normalized_score'])
+        'CS': (.3 * atfidf_df['normalized_score']) + (.3 * chi2_df['normalized_score'] )
     }).sort_values(by='CS', ascending=False).head(100)
 
     Genre_Object['CS'] = scores['term'].tolist()
