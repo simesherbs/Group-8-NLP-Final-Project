@@ -50,7 +50,7 @@ def generate_ngrams(text, n):
                 if "'s" in ngram or "s'" in ngram:
                     if not(len(ngram) == 3 and (ngram[1] == "'s" or ngram[1] == "s'")):
                         proper_possessive = False
-                elif unigram in punctuation_list and is_all_punc(unigram):
+                elif unigram in punctuation_list or is_all_punc(unigram):
                     not_punc = False
                     break
                 elif unigram.lower() in stop_words:
