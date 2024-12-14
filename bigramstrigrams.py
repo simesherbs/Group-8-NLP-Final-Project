@@ -22,6 +22,12 @@ overviews = df['overview'].tolist()
 
 punctuation_list = ['.', ',', '"', ":", "-", "--", ";", ".", "?", "!", "(", ")", "'", "’", "`"]
 
+def is_all_punc(str):
+    for chr in str:
+        if chr not in punctuation_list:
+            return False
+    return True
+
 def generate_ngrams(text, n):
     """
     Generate n-grams from text.
@@ -44,10 +50,10 @@ def generate_ngrams(text, n):
                 if "'s" in ngram or "s'" in ngram:
                     if not(len(ngram) == 3 and (ngram[1] == "'s" or ngram[1] == "s'")):
                         proper_possessive = False
-                if unigram in punctuation_list:
+                elif unigram in punctuation_list and is_all_punc(unigram):
                     not_punc = False
                     break
-                if unigram.lower() in stop_words:
+                elif unigram.lower() in stop_words:
                     no_stop_words = False
                     break
                 else:
@@ -67,7 +73,6 @@ for i, row in df.iterrows():
     trigrams = generate_ngrams(overview, 3)
     entries_bigrams_trigrams.append({
         "index": i,
-        "overview": overview,
         "unigrams": unigrams,
         "bigrams": bigrams,
         "trigrams": trigrams,
@@ -78,11 +83,10 @@ for i, row in df.iterrows():
 # Save the bigrams and trigrams for each entry to a CSV file
 with open('entry_bigrams_trigrams.csv', 'w', newline='', encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['Index', 'Overview', 'Unigrams', 'Bigrams', 'Trigrams', 'Ngrams', 'Genres'])
+    writer.writerow(['Index', 'Unigrams', 'Bigrams', 'Trigrams', 'Ngrams', 'Genres'])
     for entry in entries_bigrams_trigrams:
         writer.writerow([
             entry['index'],
-            entry['overview'],
             ", ".join([" ".join(unigram) for unigram in entry['unigrams']]),
             ", ".join([" ".join(bigram) for bigram in entry['bigrams']]),
             ", ".join([" ".join(trigram) for trigram in entry['trigrams']]),
